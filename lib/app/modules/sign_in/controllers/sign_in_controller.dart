@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:foodie/app/common/widgets/common_widget.dart';
+import 'package:foodie/app/routes/app_pages.dart';
+import 'package:foodie/app/utils/strings.dart';
 import 'package:get/get.dart';
 
 class SignInController extends GetxController {
-  var emailTextEditingController = TextEditingController().obs;
-  var passwordTextEditingController = TextEditingController().obs;
+  final _emailTextEditingController = TextEditingController().obs;
+  final _passwordTextEditingController = TextEditingController().obs;
 
-  var validateEmailText = ''.obs;
-  var validatePassText = ''.obs;
-  var isValidEmail = true.obs;
-  var isPassEmpty = false.obs;
-  var isPassSecure = true.obs;
+  final _isPassSecure = true.obs;
+
+  //Getter
+  TextEditingController get emailController =>
+      _emailTextEditingController.value;
+  TextEditingController get passwordController =>
+      _passwordTextEditingController.value;
+
+  bool get isPassSecure => _isPassSecure.value;
+
+  //setter
+  void setIsPassSecure(bool value) => _isPassSecure.value = !value;
 
   // //create a instance of FirebaseAuthService class
   // final firebaseAuthservice = FirebaseAuthService();
@@ -24,25 +34,40 @@ class SignInController extends GetxController {
 
   //go Sign Up page
   goSignupPage() {
-    // Get.offNamed(Routes.signUp);
+    Get.toNamed(Routes.SIGN_UP);
   }
 
   //go Forget password page
   goForgetPasswordPage() {
-    // Get.toNamed(Routes.forgotPassword);
+    // Get.toNamed(Routes.for);
   }
 
-  //Email validation
-  void validateEmail(String value) {
-    // if (value == "") {
-    //   validateEmailText.value = Constants.emailRequired;
-    //   isValidEmail.value = false;
-    // } else if (!GetUtils.isEmail(value)) {
-    //   validateEmailText.value = Constants.emailInvalid;
-    //   isValidEmail.value = false;
-    // } else {
-    //   validateEmailText.value = "";
-    //   isValidEmail.value = true;
+//login
+  void login() {
+    // CommonWidget.loader();
+    // try {
+    //   validateField();
+    //   Get.back();
+    // } catch (e) {
+    //   Get.back();
+    //   CommonWidget.errorPopUp(e.toString());
     // }
+  }
+
+  //validate field
+  void validateField() {
+    try {
+      if (_emailTextEditingController.value.text.isEmpty) {
+        throw Strings.emailRequired;
+      } else if (!GetUtils.isEmail(_emailTextEditingController.value.text)) {
+        throw Strings.emailInvalid;
+      } else if (_passwordTextEditingController.value.text.isEmpty) {
+        throw Strings.passRequired;
+      } else {
+        return;
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

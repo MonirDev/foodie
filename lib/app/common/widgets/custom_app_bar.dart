@@ -3,24 +3,18 @@ import 'package:foodie/app/config/app_colors.dart';
 import 'package:foodie/app/utils/spacer_widgets.dart';
 import 'package:get/get.dart';
 
-class AppbarWithLogoTitle extends StatelessWidget {
-  const AppbarWithLogoTitle({
+class CustomAppbar extends StatelessWidget {
+  const CustomAppbar({
     super.key,
     required this.title,
     this.subTitle,
     this.useBackBtn,
-    this.useLogo,
-    this.subTitle2,
     this.actionWidget,
     this.backFunc,
-    this.useSubText,
   });
   final String title;
   final String? subTitle;
   final bool? useBackBtn;
-  final bool? useLogo;
-  final bool? useSubText;
-  final String? subTitle2;
   final Widget? actionWidget;
   final void Function()? backFunc;
 
@@ -36,9 +30,10 @@ class AppbarWithLogoTitle extends StatelessWidget {
   Widget _appBarSection(
     double statusHeight,
   ) {
-    return SizedBox(
+    return Container(
+      color: AppColors.accentColor,
       width: Get.width,
-      height: setHeight(useLogo, statusHeight),
+      height: setHeight(statusHeight),
       child: Stack(
         children: [
           Padding(
@@ -93,7 +88,7 @@ class AppbarWithLogoTitle extends StatelessWidget {
     );
   }
 
-  double setHeight(bool? useLogo, double statusBarHeight) {
-    return statusBarHeight + 70;
+  double setHeight(double statusBarHeight) {
+    return statusBarHeight + 50;
   }
 }

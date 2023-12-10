@@ -40,20 +40,22 @@ class SignInView extends GetView<SignInController> {
   Widget _buildBodyContent() {
     return SizedBox(
       width: Get.width,
-      child: Column(
-        children: [
-          SpacerWidget.h20,
-          _buildHeaderText(),
-          SpacerWidget.h40,
-          _buildLoginForm(),
-          SpacerWidget.h15,
-          _buildForgotPass(),
-          SpacerWidget.h20,
-          _buildLoginButton(),
-          SpacerWidget.h15,
-          _buildSignUpText(),
-          SpacerWidget.h60,
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SpacerWidget.h20,
+            _buildHeaderText(),
+            SpacerWidget.h40,
+            _buildLoginForm(),
+            SpacerWidget.h15,
+            _buildForgotPass(),
+            SpacerWidget.h20,
+            _buildLoginButton(),
+            SpacerWidget.h15,
+            _buildSignUpText(),
+            SpacerWidget.h20,
+          ],
+        ),
       ),
     );
   }
@@ -70,7 +72,9 @@ class SignInView extends GetView<SignInController> {
             const TextSpan(text: "${Strings.donthaveAcc} "),
             TextSpan(
               text: Strings.signUp,
-              style: Get.textTheme.bodySmall?.copyWith(color: AppColors.red),
+              style: Get.textTheme.bodyMedium?.copyWith(
+                color: AppColors.red,
+              ),
             ),
           ],
         ),
@@ -98,34 +102,6 @@ class SignInView extends GetView<SignInController> {
               size: 20,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-//Build Login Button
-  Widget _buildLoginButton() {
-    return SizedBox(
-      width: Get.width - 40,
-      height: 50,
-      child: TextButton(
-        style: const ButtonStyle(
-          backgroundColor: MaterialStatePropertyAll<Color>(AppColors.red),
-          shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(25),
-              ),
-            ),
-          ),
-        ),
-        onPressed: () {},
-        child: Text(
-          Strings.login,
-          style: Get.textTheme.bodyLarge?.copyWith(
-            color: AppColors.white,
-            fontWeight: FontWeight.bold,
-          ),
         ),
       ),
     );
@@ -163,12 +139,17 @@ class SignInView extends GetView<SignInController> {
   //Build Password TextFormField
   Widget _buildPasswordTextFormField() {
     return CustomTextFormField(
-      controller: controller.passwordTextEditingController.value,
+      controller: controller.passwordController,
       onchanged: (val) {},
-      hintText: Strings.enterpassFirst,
-      suffixEye: Icons.visibility_off,
+      hintText: Strings.enterPassword,
+      suffixEye: controller.isPassSecure
+          ? Icons.visibility_off
+          : Icons.visibility_sharp,
+      suffixClick: () => controller.setIsPassSecure(
+        controller.isPassSecure,
+      ),
       isPassField: true,
-      isPassSecure: true,
+      isPassSecure: controller.isPassSecure,
       contentpaddingLeft: 20,
       borderRadius: 15,
     );
@@ -177,12 +158,43 @@ class SignInView extends GetView<SignInController> {
 //Build Email TextFormField
   Widget _buildEmailTextFormField() {
     return CustomTextFormField(
-      controller: controller.emailTextEditingController.value,
+      controller: controller.emailController,
       onchanged: (val) {},
-      hintText: Strings.pleaseEnterName,
+      hintText: Strings.enterEmail,
       isPassField: false,
       contentpaddingLeft: 20,
       borderRadius: 15,
+      inputType: TextInputType.emailAddress,
+    );
+  }
+
+//Build Login Button
+  Widget _buildLoginButton() {
+    return SizedBox(
+      width: Get.width - 40,
+      height: 50,
+      child: TextButton(
+        style: const ButtonStyle(
+          backgroundColor: MaterialStatePropertyAll<Color>(
+            AppColors.accentColor,
+          ),
+          shape: MaterialStatePropertyAll<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(25),
+              ),
+            ),
+          ),
+        ),
+        onPressed: () => controller.login(),
+        child: Text(
+          Strings.login,
+          style: Get.textTheme.bodyLarge?.copyWith(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
   }
 
@@ -191,7 +203,9 @@ class SignInView extends GetView<SignInController> {
     return Center(
       child: Text(
         Strings.login,
-        style: Get.textTheme.headlineMedium,
+        style: Get.textTheme.headlineLarge?.copyWith(
+          color: AppColors.accentColor,
+        ),
       ),
     );
   }

@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import '../controllers/cart_controller.dart';
+import '../controllers/profile_controller.dart';
 
-class CartView extends GetView<CartController> {
-  CartView({Key? key}) : super(key: key);
+class ProfileView extends GetView<ProfileController> {
+  ProfileView({Key? key}) : super(key: key);
   @override
-  final CartController controller = Get.put(CartController());
+  final ProfileController controller = Get.put(ProfileController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: const Center(
         child: Text(
-          'CartView is working',
+          'ProfileView is working',
           style: TextStyle(fontSize: 20),
         ),
       ),

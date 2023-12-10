@@ -12,6 +12,8 @@ abstract class Routes {
   static const PRODUCT_DETAILS = _Paths.PRODUCT_DETAILS;
   static const ORDER = _Paths.ORDER;
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
+  static const FAVOURITE = _Paths.FAVOURITE;
+  static const PROFILE = _Paths.PROFILE;
 }
 
 abstract class _Paths {
@@ -25,4 +27,6 @@ abstract class _Paths {
   static const PRODUCT_DETAILS = '/product-details';
   static const ORDER = '/order';
   static const SPLASH_SCREEN = '/splash-screen';
+  static const FAVOURITE = '/favourite';
+  static const PROFILE = '/profile';
 }
