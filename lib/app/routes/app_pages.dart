@@ -6,12 +6,12 @@ import '../modules/cart/bindings/cart_binding.dart';
 import '../modules/cart/views/cart_view.dart';
 import '../modules/favourite/bindings/favourite_binding.dart';
 import '../modules/favourite/views/favourite_view.dart';
+import '../modules/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/order/bindings/order_binding.dart';
 import '../modules/order/views/order_view.dart';
-import '../modules/order_history/bindings/order_history_binding.dart';
-import '../modules/order_history/views/order_history_view.dart';
 import '../modules/product_details/bindings/product_details_binding.dart';
 import '../modules/product_details/views/product_details_view.dart';
 import '../modules/profile/bindings/profile_binding.dart';
@@ -28,7 +28,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.BOTTOM_BAR;
+  static const INITIAL = Routes.SPLASH_SCREEN;
 
   static final routes = [
     GetPage(
@@ -57,18 +57,13 @@ class AppPages {
       binding: CartBinding(),
     ),
     GetPage(
-      name: _Paths.ORDER_HISTORY,
-      page: () => const OrderHistoryView(),
-      binding: OrderHistoryBinding(),
-    ),
-    GetPage(
       name: _Paths.PRODUCT_DETAILS,
       page: () => const ProductDetailsView(),
       binding: ProductDetailsBinding(),
     ),
     GetPage(
       name: _Paths.ORDER,
-      page: () => const OrderView(),
+      page: () => OrderView(),
       binding: OrderBinding(),
     ),
     GetPage(
@@ -85,6 +80,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
     ),
   ];
 }

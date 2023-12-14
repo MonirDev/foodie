@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:foodie/app/common/common_func.dart';
 import 'package:foodie/app/common/widgets/sliver_appbar_widget.dart';
 import 'package:foodie/app/config/app_colors.dart';
+import 'package:foodie/app/data/models/food_model.dart';
 import 'package:foodie/app/modules/home/widgets/category_section_header.dart';
 import 'package:foodie/app/utils/spacer_widgets.dart';
 import 'package:foodie/app/utils/strings.dart';
@@ -19,7 +21,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.grey.withOpacity(0.2),
+      backgroundColor: AppColors.pendingColor.withOpacity(0.3),
       body:
           // controller.obx(
           //   (data) =>
@@ -41,16 +43,26 @@ class HomeView extends GetView<HomeController> {
         SliverToBoxAdapter(
           child: SpacerWidget.h10,
         ),
-        const CategorySectionHeader(label: Strings.beverages),
-        _buildProductList(["", "", "", ""]),
-        const CategorySectionHeader(label: Strings.snacks),
-        _buildProductList(["", "", "", ""]),
-        const CategorySectionHeader(label: Strings.fastFood),
-        _buildProductList(["", "", "", ""]),
-        const CategorySectionHeader(label: Strings.meals),
-        _buildProductList(["", "", "", ""]),
-        const CategorySectionHeader(label: Strings.desserts),
-        _buildProductList(["", "", "", ""]),
+        SliverToBoxAdapter(
+          child: Obx(
+            () => controller.isLoading
+                ? _buildLoader()
+                : Column(
+                    children: [
+                      const CategorySectionHeader(label: Strings.beverages),
+                      _buildProductList(controller.beveragesList),
+                      const CategorySectionHeader(label: Strings.snacks),
+                      _buildProductList(controller.snacksList),
+                      const CategorySectionHeader(label: Strings.fastFood),
+                      _buildProductList(controller.fastFoodList),
+                      const CategorySectionHeader(label: Strings.meals),
+                      _buildProductList(controller.mealsList),
+                      const CategorySectionHeader(label: Strings.deserts),
+                      _buildProductList(controller.desertsList),
+                    ],
+                  ),
+          ),
+        ),
         SliverToBoxAdapter(
           child: SpacerWidget.h40,
         ),
@@ -59,29 +71,20 @@ class HomeView extends GetView<HomeController> {
   }
 
   //Build Category Product List
-  Widget _buildProductList(List<String> list) {
-    return SliverPadding(
-      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-      sliver: SliverToBoxAdapter(
-        child: SizedBox(
-          height: 210,
-          width: Get.width,
-          child: ListView(
+  Widget _buildProductList(List<FoodModel> list) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: SizedBox(
+        height: 210,
+        width: Get.width,
+        child: Obx(
+          () => ListView.builder(
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
-            children: list
-                .asMap()
-                .map(
-                  (index, value) {
-                    return MapEntry(
-                      index,
-                      _buildProduct(),
-                    );
-                  },
-                )
-                .values
-                .toList(),
+            itemCount: list.length,
+            itemBuilder: (ctx, i) => _buildProduct(
+              list[i],
+            ),
           ),
         ),
       ),
@@ -89,9 +92,9 @@ class HomeView extends GetView<HomeController> {
   }
 
 // //Build Product
-  Widget _buildProduct() {
+  Widget _buildProduct(FoodModel food) {
     return GestureDetector(
-      onTap: () => controller.goToProductDetails(),
+      onTap: () => controller.goToProductDetails(food),
       child: Container(
         height: 210,
         decoration: const BoxDecoration(
@@ -100,15 +103,14 @@ class HomeView extends GetView<HomeController> {
             Radius.circular(8),
           ),
         ),
-        margin: const EdgeInsets.only(right: 10),
+        margin: const EdgeInsets.only(right: 5, left: 10),
         child: Stack(
           children: [
-            _buildImage(
-                "https://images.unsplash.com/photo-1542601098-3adb3baeb1ec?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=5bb9a9747954cdd6eabe54e3688a407e&auto=format&fit=crop&w=500&q=60"),
+            _buildImage(food.imgUrl ?? ""),
             Positioned(
-              right: 0,
+              right: 3,
               top: 94,
-              child: _buildWishlistIcon(),
+              child: _buildWishlistIcon(food),
             ),
             Positioned(
               top: 125,
@@ -119,18 +121,18 @@ class HomeView extends GetView<HomeController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildRating(),
+                    _buildRating(food.ratings ?? 1.0),
                     SizedBox(
                       width: 110,
                       child: Text(
-                        "title title title ",
+                        food.title ?? "",
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Get.textTheme.bodyMedium,
                       ),
                     ),
                     Text(
-                      " 0 Tk",
+                      "${food.price} ${Strings.tk}",
                       style: Get.textTheme.bodyMedium
                           ?.copyWith(color: AppColors.accentColor),
                     ),
@@ -145,9 +147,9 @@ class HomeView extends GetView<HomeController> {
   }
 
 //Build rating
-  Widget _buildRating() {
+  Widget _buildRating(double rating) {
     return RatingBar.builder(
-      initialRating: 3.5,
+      initialRating: rating,
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: true,
@@ -162,21 +164,30 @@ class HomeView extends GetView<HomeController> {
   }
 
 //Build Wishlist Icon
-  Widget _buildWishlistIcon() {
-    return Container(
-      height: 30,
-      width: 30,
-      decoration: const BoxDecoration(
-        color: AppColors.grey,
-        borderRadius: BorderRadius.all(
-          Radius.circular(20),
-        ),
-      ),
-      child: Center(
-        child: Icon(
-          Icons.favorite,
-          size: 20,
-          color: AppColors.white.withOpacity(0.8),
+  Widget _buildWishlistIcon(FoodModel food) {
+    return Obx(
+      () => GestureDetector(
+        onTap: () => setFavoriteStatus(food),
+        child: Container(
+          height: 30,
+          width: 30,
+          decoration: BoxDecoration(
+            color: controller.getFavoriteStatus(food)
+                ? AppColors.grey.withOpacity(0.3)
+                : AppColors.grey,
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+          ),
+          child: Center(
+            child: Icon(
+              Icons.favorite,
+              size: controller.getFavoriteStatus(food) ? 25 : 20,
+              color: controller.getFavoriteStatus(food)
+                  ? AppColors.red
+                  : AppColors.white.withOpacity(0.8),
+            ),
+          ),
         ),
       ),
     );
@@ -218,10 +229,13 @@ class HomeView extends GetView<HomeController> {
 
   //Build Loader
   Widget _buildLoader() {
-    return const Center(
-      child: SpinKitThreeInOut(
-        color: AppColors.grey,
-        size: 25,
+    return SizedBox(
+      height: Get.height / 2,
+      child: const Center(
+        child: SpinKitThreeInOut(
+          color: AppColors.accentColor,
+          size: 25,
+        ),
       ),
     );
   }

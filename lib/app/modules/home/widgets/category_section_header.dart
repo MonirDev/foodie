@@ -9,16 +9,14 @@ class CategorySectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildLabel(),
-            _buildViewAll(),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buildLabel(),
+          _buildViewAll(),
+        ],
       ),
     );
   }

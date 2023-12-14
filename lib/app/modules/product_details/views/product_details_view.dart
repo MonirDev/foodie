@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:foodie/app/config/app_colors.dart';
+import 'package:foodie/app/data/models/food_model.dart';
 import 'package:foodie/app/utils/spacer_widgets.dart';
 import 'package:foodie/app/utils/strings.dart';
 
@@ -16,11 +16,13 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.white.withOpacity(0.9),
+        backgroundColor: AppColors.white,
         body: Stack(
           alignment: AlignmentDirectional.topCenter,
           children: [
-            _buildBody(),
+            Obx(
+              () => _buildBody(),
+            ),
             _buildOrderNowButton(),
           ],
         ),
@@ -94,7 +96,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
               ),
             ),
           ),
-          onPressed: () {},
+          onPressed: () => controller.buyNow(),
           child: Text(
             Strings.buyNow,
             style: Get.textTheme.bodyLarge?.copyWith(
@@ -119,7 +121,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
 //Build DescriptionText
   Widget _buildDescriptionText() {
     return Text(
-      "These categories could cover a wide range of food types and preferences, allowing users to explore various options within your app, whether they're looking for a quick bite, specific cuisines, or different types of beverages and treats.",
+      controller.foodModel.description ?? "",
       style: Get.textTheme.bodyMedium?.copyWith(
         color: AppColors.mediumGrey,
       ),
@@ -130,7 +132,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
   Widget _buildLabel() {
     return Expanded(
       child: Text(
-        "Title",
+        controller.foodModel.title ?? "",
         maxLines: 3,
         overflow: TextOverflow.ellipsis,
         style: Get.textTheme.bodyLarge?.copyWith(
@@ -145,7 +147,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
     return SizedBox(
       width: 60,
       child: Text(
-        "250 ${Strings.tk}",
+        "${controller.foodModel.price} ${Strings.tk}",
         style: Get.textTheme.bodyMedium?.copyWith(
           fontWeight: FontWeight.bold,
         ),
@@ -156,7 +158,7 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
 //Build rating
   Widget _buildRating() {
     return RatingBar.builder(
-      initialRating: 3.5,
+      initialRating: controller.foodModel.ratings ?? 1.0,
       minRating: 1,
       direction: Axis.horizontal,
       allowHalfRating: true,
@@ -179,14 +181,13 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
             width: Get.width,
             height: 210,
             child: CachedNetworkImage(
-              imageUrl:
-                  "https://images.unsplash.com/photo-1542601098-3adb3baeb1ec?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=5bb9a9747954cdd6eabe54e3688a407e&auto=format&fit=crop&w=500&q=60",
-              fit: BoxFit.cover,
+              imageUrl: controller.foodModel.imgUrl ?? "",
+              fit: BoxFit.fill,
               placeholder: (context, url) => _buildImgPlaceholder(),
               errorWidget: (context, url, error) => _buildImgPlaceholder(),
             ),
           ),
-          _buildWishlistIcon(),
+          _buildWishlistIcon(controller.foodModel),
           _buildAddCartIcon(),
           _backBtn(),
         ],
@@ -202,30 +203,39 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
           onPressed: () => Get.back(),
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: AppColors.white,
+            color: AppColors.red,
           ),
         ));
   }
 
 //Build Wishlist Icon
-  Widget _buildWishlistIcon() {
+  Widget _buildWishlistIcon(FoodModel food) {
     return Positioned(
       top: 20,
       right: 20,
-      child: Container(
-        height: 30,
-        width: 30,
-        decoration: const BoxDecoration(
-          color: AppColors.grey,
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
-          ),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.favorite,
-            size: 20,
-            color: AppColors.white.withOpacity(0.8),
+      child: Obx(
+        () => GestureDetector(
+          onTap: () => controller.updateFavStatusInHomeAndFavoritePage(food),
+          child: Container(
+            height: 30,
+            width: 30,
+            decoration: BoxDecoration(
+              color: controller.getFavoriteStatus(food)
+                  ? AppColors.grey.withOpacity(0.3)
+                  : AppColors.grey,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(20),
+              ),
+            ),
+            child: Center(
+              child: Icon(
+                Icons.favorite,
+                size: 20,
+                color: controller.getFavoriteStatus(food)
+                    ? AppColors.red
+                    : AppColors.white.withOpacity(0.8),
+              ),
+            ),
           ),
         ),
       ),
@@ -237,20 +247,23 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
     return Positioned(
       bottom: 20,
       right: 20,
-      child: Container(
-        height: 35,
-        width: 35,
-        decoration: const BoxDecoration(
-          color: AppColors.pendingColor,
-          borderRadius: BorderRadius.all(
-            Radius.circular(20),
+      child: GestureDetector(
+        onTap: () => controller.addToCart(controller.foodModel),
+        child: Container(
+          height: 40,
+          width: 40,
+          decoration: const BoxDecoration(
+            color: AppColors.pendingColor,
+            borderRadius: BorderRadius.all(
+              Radius.circular(20),
+            ),
           ),
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.add_shopping_cart,
-            size: 25,
-            color: AppColors.red,
+          child: const Center(
+            child: Icon(
+              Icons.add_shopping_cart,
+              size: 25,
+              color: AppColors.red,
+            ),
           ),
         ),
       ),
@@ -263,16 +276,6 @@ class ProductDetailsView extends GetView<ProductDetailsController> {
       Icons.broken_image,
       size: Get.width * 0.25,
       color: AppColors.grey.withOpacity(0.3),
-    );
-  }
-
-  //Build Loader
-  Widget _buildLoader() {
-    return Center(
-      child: SpinKitThreeInOut(
-        color: AppColors.grey,
-        size: 25,
-      ),
     );
   }
 }

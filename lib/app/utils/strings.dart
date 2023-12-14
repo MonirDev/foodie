@@ -3,6 +3,12 @@ class Strings {
   static const String appName = "Foodie";
   static const String envPath = "assets/.env";
 
+  //Collection name
+  static const String foodCollectionsKey = "food-collections";
+  static const String usersKey = "users";
+  static const String ordersKey = "orders";
+  static const String cartsKey = "carts";
+
   //home banner image link
   static const String homeBannerUrl =
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D";
@@ -25,11 +31,39 @@ class Strings {
   static const String successfullyDone = "Successfully Done";
   static const String networkError = "Network Error";
   static const String somethingWentWrong = "Something went wrong.";
+  static const String registrationCompleted = "Registration Completed";
+  static const String userDoesNotExist = "User Does Not Exist";
+  static const String addedToCart = "Added to cart";
+  static const String removedFromCart = "Removed from cart";
+  static const String thankYouForYourOrder = "Thank you for your order";
+
+  //order
+  static const String totalItem = "Total Item";
+  static const String deliveryType = "Delivery Type";
+  static const String cashOnDelivery = "Cash on Delivery";
+
+  //profile
+  static const String myOrders = "My Orders";
+  static const String buyAgain = "Buy again";
+  static const String areUSureYouWantToLogout =
+      "Are you sure, you want to logout?";
+
+  //forgot password
+  static const String enterOldPass = "Enter old password";
+  static const String enterNewPass = "Enter new password";
+  static const String oldPassword = "Old password";
+  static const String newPassword = "New password";
+  static const String resetPassword = "Reset Password";
+  static const String updatePassword = "Update Password";
+  //my cart
+  static const String placeOrder = "Place Order";
+  static const String checkout = "Checkout";
+  static const String totalAmount = "Total Amount";
 
   //details page
   static const String buyNow = "Buy now";
   static const String title = "Title";
-  static const String tk = "TK";
+  static const String tk = "Tk";
   static const String description = "Description";
 
   //login page
@@ -52,9 +86,10 @@ class Strings {
   static const String password = "Password";
   static const String enterPassword = "Enter password";
   static const String confirmPassword = "Confirm password";
-  static const String emailRequired = "Email is required!";
-  static const String nameRequired = "Name is required!";
-  static const String passRequired = "Password is required!";
+  static const String emailRequired = "Kindly enter a valid email";
+  static const String nameRequired = "Kindly enter name";
+  static const String passRequired = "Kindly enter password";
+  static const String oldPassRequired = "Kindly enter old password";
   static const String passNotmatched = "Password didn't match!";
   static const String enterpassFirst = "Enter above passowrd first";
   static const String pleaseRetypePass = "Please re-type the password";
@@ -73,7 +108,25 @@ class Strings {
   static const String beverages = "Beverages";
   static const String snacks = "Snacks";
   static const String fastFood = "Fast Food";
-  static const String desserts = "Desserts";
+  static const String deserts = "Deserts";
   static const String meals = "Meals";
   static const String viewAll = "View all";
+
+  //page name
+  static const String favourites = "Favourites";
+  static const String myCart = "My Cart";
+  static const String profile = "Profile";
+
+  //key string
+  static const String uId = "uId";
+  static const String emailKey = "email";
+  static const String passwordKey = "password";
+  static const String idKey = "id";
+  static const String titleKey = "title";
+  static const String descriptionKey = "description";
+  static const String priceKey = "price";
+  static const String imgUrlKey = "imgUrl";
+  static const String categoryKey = "category";
+  static const String ratingsKey = "ratings";
+  static const String favoriteKey = "favorite";
 }

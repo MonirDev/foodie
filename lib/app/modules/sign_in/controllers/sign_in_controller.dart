@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:foodie/app/common/widgets/common_widget.dart';
+import 'package:foodie/app/data/services/user_service.dart';
 import 'package:foodie/app/routes/app_pages.dart';
 import 'package:foodie/app/utils/strings.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInController extends GetxController {
   final _emailTextEditingController = TextEditingController().obs;
@@ -21,16 +23,8 @@ class SignInController extends GetxController {
   //setter
   void setIsPassSecure(bool value) => _isPassSecure.value = !value;
 
-  // //create a instance of FirebaseAuthService class
-  // final firebaseAuthservice = FirebaseAuthService();
-
-  // //create a instance of FirebaseCollectionService class
-  // final collectionservice = CollectionService();
-
-  @override
-  void onInit() {
-    super.onInit();
-  }
+  //User service
+  final UserService _userService = Get.put(UserService());
 
   //go Sign Up page
   goSignupPage() {
@@ -39,19 +33,58 @@ class SignInController extends GetxController {
 
   //go Forget password page
   goForgetPasswordPage() {
-    // Get.toNamed(Routes.for);
+    Get.toNamed(Routes.FORGOT_PASSWORD);
   }
 
 //login
-  void login() {
-    // CommonWidget.loader();
-    // try {
-    //   validateField();
-    //   Get.back();
-    // } catch (e) {
-    //   Get.back();
-    //   CommonWidget.errorPopUp(e.toString());
-    // }
+  Future<void> login() async {
+    CommonWidget.loader();
+    try {
+      validateField();
+      await _userService
+          .login(
+        _emailTextEditingController.value.text,
+        _passwordTextEditingController.value.text,
+      )
+          .then(
+        (resp) async {
+          await SharedPreferences.getInstance().then(
+            (pref) async {
+              //store login token
+              await pref.setString(
+                Strings.loginToken,
+                resp.uId ?? "",
+              );
+              await pref.setString(
+                Strings.name,
+                resp.name ?? "",
+              );
+              await pref.setString(
+                Strings.email,
+                resp.email ?? "",
+              );
+              //store keepLoggedIn status
+              await pref.setBool(
+                Strings.keepMeLoggedIn,
+                true,
+              );
+            },
+          );
+
+          //
+          Get.back();
+          goToHomePage();
+        },
+      );
+    } catch (e) {
+      Get.back();
+      CommonWidget.callSnackBar(e.toString(), true);
+    }
+  }
+
+  //goTOHome page
+  void goToHomePage() {
+    Get.offAllNamed(Routes.BOTTOM_BAR);
   }
 
   //validate field

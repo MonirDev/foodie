@@ -12,26 +12,25 @@ class BottomBarView extends GetView<BottomBarController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Obx(() => Text(
-      //         Constants.screensHeader[controller.currentIndex],
-      //       )),
-      //   centerTitle: true,
-      // ),
       body: Obx(
         () => Constants.screens[controller.currentIndex],
       ),
-      bottomNavigationBar: ConvexAppBar.badge(
-        {
-          1: "6",
-          2: "2",
-        },
-        badgeMargin: const EdgeInsets.only(bottom: 20, left: 20),
-        style: TabStyle.react,
-        items: Constants.tabItemList,
-        backgroundColor: AppColors.accentColor.withOpacity(0.8),
-        initialActiveIndex: controller.currentIndex,
-        onTap: (int i) => controller.onItemTapped(i),
+      bottomNavigationBar: Obx(
+        () => ConvexAppBar.badge(
+          {
+            1: controller.favoriteCount.toString(),
+            2: controller.cartCount.toString(),
+          },
+          badgeMargin: const EdgeInsets.only(bottom: 25, left: 20),
+          style: TabStyle.react,
+          items: Constants.tabItemList,
+          backgroundColor: AppColors.white,
+          color: AppColors.accentColor.withOpacity(0.8),
+          activeColor: AppColors.accentColor,
+          badgeColor: AppColors.darkRed,
+          initialActiveIndex: controller.currentIndex,
+          onTap: (int i) => controller.onItemTapped(i),
+        ),
       ),
     );
   }
