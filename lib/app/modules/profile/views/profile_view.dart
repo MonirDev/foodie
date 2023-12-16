@@ -266,24 +266,24 @@ class ProfileView extends GetView<ProfileController> {
   ) {
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: label,
-            style: Get.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.black,
-            ),
-            children: [
-              TextSpan(
-                text: "(5)",
+        child: Obx(() => RichText(
+              textAlign: TextAlign.center,
+              text: TextSpan(
+                text: label,
                 style: Get.textTheme.bodyLarge?.copyWith(
-                  color: AppColors.darkRed,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.black,
                 ),
+                children: [
+                  TextSpan(
+                    text: "(${controller.orderList.length})",
+                    style: Get.textTheme.bodyLarge?.copyWith(
+                      color: AppColors.darkRed,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ));
+            )));
   }
 
   //Build Loader

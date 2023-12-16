@@ -47,9 +47,7 @@ class SignInView extends GetView<SignInController> {
             _buildHeaderText(),
             SpacerWidget.h40,
             _buildLoginForm(),
-            SpacerWidget.h15,
-            _buildForgotPass(),
-            SpacerWidget.h20,
+            SpacerWidget.h40,
             _buildLoginButton(),
             SpacerWidget.h15,
             _buildSignUpText(),
@@ -75,31 +73,6 @@ class SignInView extends GetView<SignInController> {
               style: Get.textTheme.bodyMedium?.copyWith(
                 color: AppColors.red,
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-//Build Forgot Pass
-  Widget _buildForgotPass() {
-    return GestureDetector(
-      onTap: () => controller.goForgetPasswordPage(),
-      child: SizedBox(
-        width: Get.width,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              "${Strings.forgotPass}?",
-              style: Get.textTheme.bodyMedium,
-            ),
-            SpacerWidget.w5,
-            const Icon(
-              Icons.arrow_forward,
-              color: AppColors.red,
-              size: 20,
             ),
           ],
         ),
